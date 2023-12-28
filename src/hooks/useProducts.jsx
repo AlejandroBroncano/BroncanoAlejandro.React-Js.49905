@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getProducts } from "../services";
+import { getProductById, getProducts } from "../services";
 
 /**
  * @description Custom hook from get products
@@ -7,7 +7,7 @@ import { getProducts } from "../services";
  */
 
 
-export const useGetProducts = (limit = 10) => {
+export const useGetProducts = (limit) => {
     const [productsData, setProductsData] = useState([]);
     
     useEffect(() => {
@@ -21,4 +21,20 @@ export const useGetProducts = (limit = 10) => {
         }, []);
 
         return { productsData }
+}
+
+export const useGetProductById = (id) => {
+    const [productData, setProductData] = useState([]);
+    
+    useEffect(() => {
+        getProductById(id)
+            .then((response) => {
+            setProductData(response.data);
+            })
+            .catch((error) => {
+            console.log(error);
+            });
+        }, []);
+
+        return { productData }
 }

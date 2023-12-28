@@ -18,4 +18,3 @@ const MainRouter = () => {
 };
 
 export default MainRouter;
-/*  Me quedo en el minuto 29:30 del after */
