@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getProductById, getProducts } from "../services";
+import { getCategories, getProductById, getProducts, getProductsByCategory } from "../services";
 
 /**
  * @description Custom hook from get products
@@ -37,4 +37,36 @@ export const useGetProductById = (id) => {
         }, []);
 
         return { productData }
+}
+
+export const useGetCategories = () => {
+    const [categories, setCategories] = useState([]);
+    
+    useEffect(() => {
+        getCategories()
+            .then((response) => {
+            setCategories(response.data);
+            })
+            .catch((error) => {
+            console.log(error);
+            });
+        }, []);
+
+        return { categories }
+}
+
+export const useGetProductsByCategory = (id) => {
+    const [productsData, setProductsData] = useState([]);
+    
+    useEffect(() => {
+        getProductsByCategory(id)
+            .then((response) => {
+            setProductsData(response.data.products);
+            })
+            .catch((error) => {
+            console.log(error);
+            });
+        }, [id]);
+
+        return { productsData }
 }

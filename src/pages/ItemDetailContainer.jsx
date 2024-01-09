@@ -21,4 +21,3 @@ export const ItemDetailContainer = () => {
   )
 }
 
-// me quedo en el minuto 44:50 del after
