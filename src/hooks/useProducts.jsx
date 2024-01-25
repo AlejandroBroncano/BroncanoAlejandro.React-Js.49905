@@ -34,7 +34,7 @@ export const useGetProductById = (id) => {
             .catch((error) => {
             console.log(error);
             });
-        }, []);
+        }, [id]);
 
         return { productData }
 }

@@ -1,9 +1,9 @@
-import Button from "react-bootstrap/Button";
+
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
+import ItemCount from "../ItemCount/ItemCount";
 
 const ItemListContainer = ({ productsData }) => {
-    console.log(productsData);
     return (
     <div style={{display: 'flex', justifyContent: "space-between", padding: '10px', width: '100vw', flexWrap: "wrap"}}>
         {productsData.map((products) => {
@@ -16,7 +16,6 @@ const ItemListContainer = ({ productsData }) => {
                     <Card.Title>{products.title}</Card.Title>
                     <Card.Text>{products.description}</Card.Text>
                 <div>{products.price}</div>
-                <Button variant="primary">Go somewhere</Button>
                 </Card.Body>
             </Card>
         );
