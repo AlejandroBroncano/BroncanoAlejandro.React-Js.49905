@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getCategories, getProductsByCategory } from "../services";
-import { collection, getDocs, doc, getDoc, getFirestore } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, getFirestore, query, where } from "firebase/firestore";
+
 /**
  * @description Custom hook from get products
  * @returns {Array}
@@ -41,34 +42,43 @@ export const useGetProductById = (collectionName = "products", id) => {
         return { productData }
 }
 
-export const useGetCategories = () => {
+export const useGetCategories = (collectionName = 'categories') => {
     const [categories, setCategories] = useState([]);
     
     useEffect(() => {
-        getCategories()
-            .then((response) => {
-            setCategories(response.data);
-            })
-            .catch((error) => {
-            console.log(error);
+    const db = getFirestore();
+    const productsCollection = collection(db, collectionName);
+    getDocs(productsCollection).then((snapshot) => {
+        const categories = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+    setCategories(categories[0].categories);
             });
         }, []);
+        return { categories };
+};
 
-        return { categories }
-}
-
-export const useGetProductsByCategory = (id) => {
+export const useGetProductsByCategory = (category) => {
     const [productsData, setProductsData] = useState([]);
+    const [loading, setLoading] = useState(true);
     
     useEffect(() => {
-        getProductsByCategory(id)
-            .then((response) => {
-            setProductsData(response.data.products);
-            })
-            .catch((error) => {
-            console.log(error);
-            });
-        }, [id]);
+        const fetchProductsByCategory = async () => {
+            const db = getFirestore();
+            const productsCollection = collection(db, 'products');
+            const categoryQuery = query(productsCollection, where('category', '==', category));
+            
+            try {
+                const snapshot = await getDocs(categoryQuery);
+                const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setProductsData(products);
+                setLoading(false);
+            } catch (error) {
+                console.error(error);
+                setLoading(false);
+            }
+        };
 
-        return { productsData }
-}
+        fetchProductsByCategory();
+        }, [category]);
+
+        return { productsData, loading }
+};
