@@ -9,7 +9,7 @@ export const ItemDetailContainer = () => {
 
   const { id } = useParams()
 
-  const {productData} = useGetProductById(id)
+  const {productData} = useGetProductById("products", id)
   
   return (
     <Card key={productData.id} style={{ width: "18rem" }}>
