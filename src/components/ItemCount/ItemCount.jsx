@@ -1,58 +1,56 @@
-import { useContext, useState } from "react"
-import { Button, Container } from "react-bootstrap"
+import { useContext, useState } from "react";
+import { Button, Container } from "react-bootstrap";
 import { CartContext } from "../../context/CartContext";
 
+const ItemCount = ({ productId }) => {
+  const [countItem, setCountItem] = useState(1);
 
-const ItemCount = ({productId}) => {
-    const [countItem, setCountItem] = useState(1);
+  const { count, setCount } = useContext(CartContext);
 
-    const {count, setCount} = useContext(CartContext);
+  const handleAdd = () => {
+    setCountItem(countItem + 1);
+  };
 
+  const handleRemove = () => {
+    setCountItem(countItem - 1);
+  };
 
-    const handleAdd = () => {
-        setCountItem(countItem + 1)
-    };
+  const handleAddProductToCart = () => {
+    const productExists = count.find((item) => item.id === productId);
 
-    const handleRemove = () => {
-        setCountItem(countItem - 1)
-    };
+    if (productExists) {
+      setCount(
+        count.map((item) =>
+          item.id === productId
+            ? { ...item, quantity: item.quantity + countItem }
+            : item
+        )
+      );
+    } else {
+      setCount([...count, { id: productId, quantity: countItem }]);
+    }
 
-    const handleAddProductToCart = () => {
-        const newProduct = {
-            id: productId,
-            quantity: countItem,
-        };
-        if(count.length === 0) {
-            setCount([newProduct])
-        } else {
-            const newCount = count.map((item) => {
-                if (item.id === productId) {
-                    return {
-                        ...item,
-                        quantity: item.quantity + countItem,
-                    };
-                } else {
-                    setCount([...count, newProduct]);
-                }
-            });
+    setCountItem(1);
+  };
 
+  return (
+    <div>
+      <div
+        style={{
+          width: "50%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          margin: "auto",
+        }}
+      >
+        <Button onClick={handleRemove}>-</Button>
+        <span>{countItem}</span>
+        <Button onClick={handleAdd}>+</Button>
+      </div>
+      <Button onClick={handleAddProductToCart}>Agregar al Carrito</Button>
+    </div>
+  );
+};
 
-        }
-    setCountItem(1); 
-    }; 
-
-    return (
-        <div >
-            <div style={{ width: '75%', display: 'flex', alignItems: 'center', justifyContent: 'space-around', margin: 'auto' }}>
-                <Button onClick={handleRemove}>-</Button>
-                <span>{countItem}</span>
-                <Button onClick={handleAdd}>+</Button>
-            </div>
-            <Button onClick={handleAddProductToCart}>
-                Agregar al carrito
-            </Button>
-        </div>
-    );
-    };
-
-export default ItemCount
+export default ItemCount;
